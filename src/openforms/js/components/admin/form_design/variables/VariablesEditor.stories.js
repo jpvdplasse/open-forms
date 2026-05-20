@@ -2096,6 +2096,113 @@ export const AddressNLMappingSpecificTargetsDeriveAddress = {
   },
 };
 
+export const FileMapping = {
+  args: {
+    availableFormVariables: [
+      {
+        form: 'http://localhost:8000/api/v2/forms/36612390',
+        formDefinition: 'http://localhost:8000/api/v2/form-definitions/6de1ea5a',
+        name: 'File uploads',
+        key: 'fileUploads',
+        source: 'component',
+        prefillPlugin: '',
+        prefillAttribute: '',
+        prefillIdentifierRole: 'main',
+        dataType: 'array',
+        dataFormat: undefined,
+        isSensitiveData: false,
+        serviceFetchConfiguration: undefined,
+        initialValue: [],
+      },
+    ],
+    availableComponents: {
+      fileUploads: {
+        type: 'file',
+        key: 'fileUploads',
+        label: 'File uploads',
+        multiple: false,
+      },
+    },
+    registrationBackends: [
+      {
+        backend: 'objects_api',
+        key: 'objects_api_1',
+        name: 'Objects API (v2)',
+        options: {
+          version: 2,
+          objectsApiGroup: 'group-1',
+          objecttype: '2c77babf-a967-4057-9969-0200320d23f1',
+          objecttypeVersion: 2,
+          variablesMapping: [],
+        },
+      },
+      {
+        backend: 'objects_api',
+        key: 'objects_api_2',
+        name: 'Objects API (v1)',
+        options: {
+          version: 1,
+          objectsApiGroup: 'group-1',
+          objecttype: '2c77babf-a967-4057-9969-0200320d23f1',
+          objecttypeVersion: 2,
+        },
+      },
+      {
+        backend: 'zgw-create-zaak',
+        key: 'zgw',
+        name: "ZGW API's",
+        options: {
+          zgwApiGroup: 1,
+          caseTypeIdentification: 'Aanvraag',
+          documentTypeDescription: 'bijlage',
+        },
+      },
+    ],
+  },
+
+  parameters: {
+    msw: {
+      handlers: [
+        mockTargetPathsPost({
+          string: [
+            {
+              targetPath: ['path', 'to.the', 'target'],
+              isRequired: false,
+              jsonSchema: {type: 'string'},
+            },
+          ],
+          number: [
+            {
+              targetPath: ['number', 'target'],
+              isRequired: false,
+              jsonSchema: {type: 'number'},
+            },
+          ],
+          object: [
+            {
+              targetPath: ['other', 'path'],
+              isRequired: false,
+              jsonSchema: {type: 'object', properties: {a: {type: 'string'}}},
+            },
+          ],
+          array: [
+            {
+              targetPath: ['array'],
+              isRequired: false,
+              jsonSchema: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+            },
+          ],
+        }),
+      ],
+    },
+  },
+};
+
 export const TwoBackendsWhereOnlyOneIntroducesRegistrationVariables = {
   args: {
     registrationBackends: [
