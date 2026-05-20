@@ -1,82 +1,23 @@
-import {FieldArray, useFormikContext} from 'formik';
+import {useFormikContext} from 'formik';
 import isEqual from 'lodash/isEqual';
-import PropTypes from 'prop-types';
-import React, {useContext} from 'react';
+import {useContext} from 'react';
 import {FormattedMessage} from 'react-intl';
 import {useAsync, useToggle} from 'react-use';
 
 import {APIContext} from 'components/admin/form_design/Context';
 import Field from 'components/admin/forms/Field';
 import FormRow from 'components/admin/forms/FormRow';
-import {TargetPathSelect} from 'components/admin/forms/objects_api';
+import {TextInput} from 'components/admin/forms/Inputs';
 import ErrorMessage from 'components/errors/ErrorMessage';
 
+import {MappedVariableTargetPathSelect} from './GenericObjectsApiVariableConfigurationEditor';
 import {asJsonSchema} from './utils';
 import {fetchTargetPaths} from './utils';
 
 /**
- * Hack-ish way to manage the variablesMapping state for one particular entry.
- *
- * We ensure that an item is added to `variablesMapping` by using the `FieldArray`
- * helper component if it doesn't exist yet, otherwise we update it.
+ * Registration options UI/editor for file components.
  */
-export const MappedVariableTargetPathSelect = ({
-  name,
-  index,
-  mappedVariable,
-  isLoading = false,
-  targetPaths = [],
-  isDisabled = false,
-}) => {
-  const {
-    values: {variablesMapping = []},
-    setFieldValue,
-  } = useFormikContext();
-  const isNew = variablesMapping.length === index;
-  return (
-    <FieldArray
-      name="variablesMapping"
-      render={arrayHelpers => (
-        <TargetPathSelect
-          name={name}
-          isLoading={isLoading}
-          targetPaths={targetPaths}
-          isDisabled={isDisabled}
-          onChange={newValue => {
-            // Clearing the select means we need to remove the record from the mapping,
-            // otherwise it's not a valid item for the backend.
-            if (newValue === null) {
-              arrayHelpers.remove(index);
-              return;
-            }
-
-            // otherwise, either add a new item, or update the existing
-            if (isNew) {
-              const newMapping = {...mappedVariable, targetPath: newValue.targetPath};
-              arrayHelpers.push(newMapping);
-            } else {
-              setFieldValue(name, newValue.targetPath);
-            }
-          }}
-        />
-      )}
-    />
-  );
-};
-
-MappedVariableTargetPathSelect.propTypes = {
-  name: PropTypes.string.isRequired,
-  index: PropTypes.number.isRequired,
-  mappedVariable: PropTypes.shape({
-    variableKey: PropTypes.string.isRequired,
-    targetPath: PropTypes.arrayOf(PropTypes.string),
-    options: PropTypes.object,
-  }).isRequired,
-  isLoading: PropTypes.bool,
-  isDisabled: PropTypes.bool,
-};
-
-export const GenericEditor = ({
+export const FileEditor = ({
   variable,
   components,
   namePrefix,
@@ -85,12 +26,12 @@ export const GenericEditor = ({
   objecttype,
   objectsApiGroup,
   objecttypeVersion,
+  backendOptions,
 }) => {
   const {csrftoken} = useContext(APIContext);
   const [jsonSchemaVisible, toggleJsonSchemaVisible] = useToggle(false);
+  const {getFieldProps} = useFormikContext();
 
-  // Load all the possible target paths in parallel depending on if the data should be
-  // transformed or not
   const {
     loading,
     value: targetPaths,
@@ -118,6 +59,7 @@ export const GenericEditor = ({
         />
       </ErrorMessage>
     );
+
   return (
     <>
       <FormRow>
@@ -139,6 +81,27 @@ export const GenericEditor = ({
           />
         </Field>
       </FormRow>
+      <FormRow>
+        <Field
+          {...getFieldProps(`${namePrefix}.options.organizationRsin`)}
+          label={
+            <FormattedMessage
+              description="Document upload: organizationRsin option label"
+              defaultMessage="Organization RSIN"
+            />
+          }
+          helpText={
+            <FormattedMessage
+              description="Document upload: organizationRsin option help text"
+              defaultMessage={`RSIN of the organization that registers the document in
+              the Documents API. If left blank, the general configuration is used.`}
+            />
+          }
+        >
+          <TextInput name={`${namePrefix}.organizationRsin`} maxLength="9" />
+        </Field>
+      </FormRow>
+
       <div style={{marginTop: '1em'}}>
         <a href="#" onClick={e => e.preventDefault() || toggleJsonSchemaVisible()}>
           <FormattedMessage

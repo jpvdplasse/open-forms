@@ -10,6 +10,7 @@ import FormRow from 'components/admin/forms/FormRow';
 import {TextInput} from 'components/admin/forms/Inputs';
 
 import {AddressNlEditor} from './AddressNlObjectsApiVariableConfigurationEditor';
+import {FileEditor} from './FileObjectsApiVariableConfigurationEditor';
 import {GenericEditor} from './GenericObjectsApiVariableConfigurationEditor';
 import {MapEditor} from './MapObjectsApiVariableConfigurationEditor';
 import {SelectboxesEditor} from './SelectboxesObjectsApiVariableConfigurationEditor';
@@ -18,6 +19,7 @@ import {SelectboxesEditor} from './SelectboxesObjectsApiVariableConfigurationEdi
 // adhere to the generic behaviour (GenericEditor)
 const VARIABLE_CONFIGURATION_OPTIONS = {
   addressNL: AddressNlEditor,
+  file: FileEditor,
   map: MapEditor,
   selectboxes: SelectboxesEditor,
 };
