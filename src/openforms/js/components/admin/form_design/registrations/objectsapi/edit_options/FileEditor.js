@@ -66,7 +66,7 @@ const FileEditor = ({
       </FormRow>
       <FormRow>
         <Field
-          {...getFieldProps(`${namePrefix}.options.organizationRsin`)}
+          name={`${namePrefix}.options.organizationRsin`}
           label={
             <FormattedMessage
               description="Document upload: organizationRsin option label"
@@ -81,7 +81,7 @@ const FileEditor = ({
             />
           }
         >
-          <TextInput name={`${namePrefix}.organizationRsin`} maxLength="9" />
+          <TextInput {...getFieldProps(`${namePrefix}.organizationRsin`)} maxLength="9" />
         </Field>
       </FormRow>
 
