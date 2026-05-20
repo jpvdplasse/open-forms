@@ -1,8 +1,7 @@
 import {useFormikContext} from 'formik';
-import isEqual from 'lodash/isEqual';
 import {useContext} from 'react';
 import {FormattedMessage} from 'react-intl';
-import {useAsync, useToggle} from 'react-use';
+import {useAsync} from 'react-use';
 
 import {APIContext} from 'components/admin/form_design/Context';
 import Field from 'components/admin/forms/Field';
@@ -11,6 +10,7 @@ import {TextInput} from 'components/admin/forms/Inputs';
 import ErrorMessage from 'components/errors/ErrorMessage';
 
 import {MappedVariableTargetPathSelect} from './GenericObjectsApiVariableConfigurationEditor';
+import {ShowJSONSchemaToggle} from './edit_options/generic';
 import {asJsonSchema} from './utils';
 import {fetchTargetPaths} from './utils';
 
@@ -29,7 +29,6 @@ export const FileEditor = ({
   backendOptions,
 }) => {
   const {csrftoken} = useContext(APIContext);
-  const [jsonSchemaVisible, toggleJsonSchemaVisible] = useToggle(false);
   const {getFieldProps} = useFormikContext();
 
   const {
@@ -47,8 +46,6 @@ export const FileEditor = ({
 
     return results;
   }, []);
-
-  const getTargetPath = pathSegment => targetPaths.find(t => isEqual(t.targetPath, pathSegment));
 
   if (error)
     return (
@@ -102,23 +99,7 @@ export const FileEditor = ({
         </Field>
       </FormRow>
 
-      <div style={{marginTop: '1em'}}>
-        <a href="#" onClick={e => e.preventDefault() || toggleJsonSchemaVisible()}>
-          <FormattedMessage
-            description="Objects API variable configuration editor JSON Schema visibility toggle"
-            defaultMessage="Toggle JSON Schema"
-          />
-        </a>
-        {jsonSchemaVisible && (
-          <pre style={{marginTop: '1em'}}>
-            {loading || !mappedVariable.targetPath ? (
-              <FormattedMessage description="Not applicable" defaultMessage="N/A" />
-            ) : (
-              JSON.stringify(getTargetPath(mappedVariable.targetPath).jsonSchema, null, 2)
-            )}
-          </pre>
-        )}
-      </div>
+      <ShowJSONSchemaToggle availablePaths={targetPaths} targetPath={mappedVariable.targetPath} />
     </>
   );
 };

@@ -1,6 +1,5 @@
 import {useFormikContext} from 'formik';
-import isEqual from 'lodash/isEqual';
-import React, {useContext} from 'react';
+import {useContext} from 'react';
 import {FormattedMessage} from 'react-intl';
 import {useAsync, useToggle} from 'react-use';
 
@@ -13,6 +12,7 @@ import {TargetPathSelect} from 'components/admin/forms/objects_api';
 import ErrorMessage from 'components/errors/ErrorMessage';
 
 import {MappedVariableTargetPathSelect} from './GenericObjectsApiVariableConfigurationEditor';
+import {ShowJSONSchemaToggle} from './edit_options/generic';
 import {fetchTargetPaths} from './utils';
 
 const ADDRESSNL_NESTED_PROPERTIES = {
@@ -41,7 +41,6 @@ export const AddressNlEditor = ({
     targetPath => targetPath && targetPath.length
   );
   const [specificTargetPaths, toggleSpecificTargetPaths] = useToggle(hasSpecificOptions);
-  const [jsonSchemaVisible, toggleJsonSchemaVisible] = useToggle(false);
 
   const deriveAddress = components[variable?.key]['deriveAddress'];
 
@@ -67,9 +66,6 @@ export const AddressNlEditor = ({
 
   const [objectTypeTargetPaths = [], stringTypeTargetPaths = [], numberTypeTargetPaths = []] =
     targetPaths || [];
-
-  const getTargetPath = pathSegment =>
-    objectTypeTargetPaths.find(t => isEqual(t.targetPath, pathSegment));
 
   if (error)
     return (
@@ -271,23 +267,7 @@ export const AddressNlEditor = ({
         </Fieldset>
       )}
       {!specificTargetPaths && (
-        <div style={{marginTop: '1em'}}>
-          <a href="#" onClick={e => e.preventDefault() || toggleJsonSchemaVisible()}>
-            <FormattedMessage
-              description="Objects API variable configuration editor JSON Schema visibility toggle"
-              defaultMessage="Toggle JSON Schema"
-            />
-          </a>
-          {jsonSchemaVisible && (
-            <pre style={{marginTop: '1em'}}>
-              {loading || !mappedVariable.targetPath ? (
-                <FormattedMessage description="Not applicable" defaultMessage="N/A" />
-              ) : (
-                JSON.stringify(getTargetPath(mappedVariable.targetPath).jsonSchema, null, 2)
-              )}
-            </pre>
-          )}
-        </div>
+        <ShowJSONSchemaToggle availablePaths={targetPaths} targetPath={mappedVariable.targetPath} />
       )}
     </>
   );
