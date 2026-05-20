@@ -4,9 +4,9 @@ import {FormattedMessage} from 'react-intl';
 import Field from 'components/admin/forms/Field';
 import FormRow from 'components/admin/forms/FormRow';
 import {TextInput} from 'components/admin/forms/Inputs';
+import {TargetPathSelect} from 'components/admin/forms/objects_api';
 import ErrorMessage from 'components/errors/ErrorMessage';
 
-import {MappedVariableTargetPathSelect} from './GenericObjectsApiVariableConfigurationEditor';
 import {ShowJSONSchemaToggle} from './edit_options/generic';
 import {useFetchTargetPaths, useVariableJsonSchema} from './edit_options/hooks';
 
@@ -55,11 +55,11 @@ export const FileEditor = ({
               description="'JSON Schema target' label"
             />
           }
+          required
+          noManageChildProps
         >
-          <MappedVariableTargetPathSelect
+          <TargetPathSelect
             name={`${namePrefix}.targetPath`}
-            index={index}
-            mappedVariable={mappedVariable}
             isLoading={loading}
             targetPaths={targetPaths}
           />

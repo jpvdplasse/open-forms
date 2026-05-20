@@ -11,7 +11,6 @@ import {Checkbox} from 'components/admin/forms/Inputs';
 import {TargetPathSelect} from 'components/admin/forms/objects_api';
 import ErrorMessage from 'components/errors/ErrorMessage';
 
-import {MappedVariableTargetPathSelect} from './GenericObjectsApiVariableConfigurationEditor';
 import {ShowJSONSchemaToggle} from './edit_options/generic';
 import {fetchTargetPaths} from './utils';
 
@@ -137,14 +136,13 @@ export const AddressNlEditor = ({
             />
           }
           disabled={specificTargetPaths}
+          noManageChildProps
         >
-          <MappedVariableTargetPathSelect
+          <TargetPathSelect
             name={`${namePrefix}.targetPath`}
-            index={index}
-            mappedVariable={mappedVariable}
-            isDisabled={specificTargetPaths}
             isLoading={loading}
             targetPaths={objectTypeTargetPaths}
+            isDisabled={specificTargetPaths}
           />
         </Field>
       </FormRow>
