@@ -99,8 +99,6 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
         self._vcr_before_record_request.hook = fail_csv_request
         objects_api_group = ObjectsAPIGroupConfigFactory.create(
             for_test_docker_compose=True,
-            catalogue_domain="TEST",
-            catalogue_rsin="000000000",
             organisatie_rsin="000000000",
         )
         plugin = ObjectsAPIRegistration(PLUGIN_IDENTIFIER)
@@ -125,6 +123,10 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
                     "objects_api_group": objects_api_group,
                     "objecttype": UUID("8e46e0a5-b1b4-449b-b9e9-fa3cea655f48"),
                     "objecttype_version": 3,
+                    "catalogue": {
+                        "domain": "TEST",
+                        "rsin": "000000000",
+                    },
                     "iot_submission_report": "PDF Informatieobjecttype",
                     "iot_submission_csv": "CSV Informatieobjecttype",
                     "iot_attachment": "",
@@ -169,8 +171,6 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
         self._vcr_before_record_request.hook = fail_ping_request
         objects_api_group = ObjectsAPIGroupConfigFactory.create(
             for_test_docker_compose=True,
-            catalogue_domain="TEST",
-            catalogue_rsin="000000000",
             organisatie_rsin="000000000",
         )
         plugin = ObjectsAPIRegistration(PLUGIN_IDENTIFIER)
@@ -209,6 +209,10 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
                     "objects_api_group": objects_api_group,
                     "objecttype": UUID("8e46e0a5-b1b4-449b-b9e9-fa3cea655f48"),
                     "objecttype_version": 3,
+                    "catalogue": {
+                        "domain": "TEST",
+                        "rsin": "000000000",
+                    },
                     "iot_attachment": "Attachment Informatieobjecttype",
                     "iot_submission_report": "",
                     "iot_submission_csv": "",
@@ -245,8 +249,6 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
         self._vcr_before_record_request.hook = fail_csv_request
         objects_api_group = ObjectsAPIGroupConfigFactory.create(
             for_test_docker_compose=True,
-            catalogue_domain="TEST",
-            catalogue_rsin="000000000",
             organisatie_rsin="000000000",
         )
         plugin = ObjectsAPIRegistration(PLUGIN_IDENTIFIER)
@@ -276,6 +278,10 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
                     "objects_api_group": objects_api_group,
                     "objecttype": UUID("8e46e0a5-b1b4-449b-b9e9-fa3cea655f48"),
                     "objecttype_version": 3,
+                    "catalogue": {
+                        "domain": "TEST",
+                        "rsin": "000000000",
+                    },
                     "iot_submission_report": "",
                     "iot_submission_csv": "CSV Informatieobjecttype",
                     "iot_attachment": "",
@@ -339,6 +345,9 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
                     "objecttype": UUID("8e46e0a5-b1b4-449b-b9e9-fa3cea655f48"),
                     "objecttype_version": 3,
                     "objects_api_group": objects_api_group,
+                    "iot_submission_report": "",
+                    "iot_submission_csv": "",
+                    "iot_attachment": "",
                     "update_existing_object": False,
                     "auth_attribute_path": [],
                 },
@@ -370,6 +379,9 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
                     "objecttype": UUID("8e46e0a5-b1b4-449b-b9e9-fa3cea655f48"),
                     "objecttype_version": 3,
                     "objects_api_group": objects_api_group,
+                    "iot_submission_report": "",
+                    "iot_submission_csv": "",
+                    "iot_attachment": "",
                     "update_existing_object": True,
                     "auth_attribute_path": ["bsn"],
                 },
@@ -407,6 +419,9 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
                     "objecttype": UUID("8e46e0a5-b1b4-449b-b9e9-fa3cea655f48"),
                     "objecttype_version": 3,
                     "objects_api_group": objects_api_group,
+                    "iot_submission_report": "",
+                    "iot_submission_csv": "",
+                    "iot_attachment": "",
                     "update_existing_object": False,
                     "auth_attribute_path": [],
                 },
@@ -437,6 +452,9 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
                     "objecttype": UUID("8e46e0a5-b1b4-449b-b9e9-fa3cea655f48"),
                     "objecttype_version": 3,
                     "objects_api_group": objects_api_group,
+                    "iot_submission_report": "",
+                    "iot_submission_csv": "",
+                    "iot_attachment": "",
                     "update_existing_object": True,
                     "auth_attribute_path": ["bsn"],
                 },
@@ -461,8 +479,6 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
         )
         api_group = ObjectsAPIGroupConfigFactory.create(
             for_test_docker_compose=True,
-            catalogue_domain="TEST",
-            catalogue_rsin="000000000",
             organisatie_rsin="000000000",
         )
         plugin = ObjectsAPIRegistration(PLUGIN_IDENTIFIER)
@@ -487,11 +503,18 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
             content_type="application/octet-stream",
         )
         # version is not relevant, works the same for v1
-        options = {
+        options: RegistrationOptionsV2 = {
             "version": 2,
             "objects_api_group": api_group,
             "objecttype": UUID("527b8408-7421-4808-a744-43ccb7bdaaa2"),
             "objecttype_version": 1,
+            "catalogue": {
+                "domain": "TEST",
+                "rsin": "000000000",
+            },
+            "iot_submission_report": "",
+            "iot_submission_csv": "",
+            "iot_attachment": "",
             "update_existing_object": False,
             "auth_attribute_path": [],
             "variables_mapping": [
@@ -532,8 +555,6 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
         """
         api_group = ObjectsAPIGroupConfigFactory.create(
             for_test_docker_compose=True,
-            catalogue_domain="TEST",
-            catalogue_rsin="000000000",
             organisatie_rsin="000000000",
         )
         plugin = ObjectsAPIRegistration(PLUGIN_IDENTIFIER)
@@ -564,6 +585,10 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
             "objects_api_group": api_group,
             "objecttype": UUID("527b8408-7421-4808-a744-43ccb7bdaaa2"),
             "objecttype_version": 1,
+            "catalogue": {
+                "domain": "TEST",
+                "rsin": "000000000",
+            },
             "update_existing_object": False,
             "auth_attribute_path": [],
             "variables_mapping": [
@@ -598,8 +623,6 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
     def test_allow_registration_with_unpublished_document_types(self):
         api_group = ObjectsAPIGroupConfigFactory.create(
             for_test_docker_compose=True,
-            catalogue_domain="DRAFT",
-            catalogue_rsin="000000000",
             organisatie_rsin="000000000",
         )
         plugin = ObjectsAPIRegistration(PLUGIN_IDENTIFIER)
@@ -629,6 +652,10 @@ class ObjectsAPIBackendVCRTests(OFVCRMixin, TestCase):
             "objects_api_group": api_group,
             "objecttype": UUID("527b8408-7421-4808-a744-43ccb7bdaaa2"),
             "objecttype_version": 1,
+            "catalogue": {
+                "domain": "DRAFT",
+                "rsin": "000000000",
+            },
             "update_existing_object": False,
             "auth_attribute_path": [],
             "variables_mapping": [
