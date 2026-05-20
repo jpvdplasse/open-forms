@@ -329,6 +329,12 @@
       "value": " contains the original filename."
     }
   ],
+  "1tLYIe": [
+    {
+      "type": 0,
+      "value": "RSIN of the organization that registers the document in the Documents API. If left blank, the general configuration is used."
+    }
+  ],
   "1y4N2r": [
     {
       "type": 0,
@@ -4647,6 +4653,12 @@
     {
       "type": 0,
       "value": "Login required?"
+    }
+  ],
+  "aarCQK": [
+    {
+      "type": 0,
+      "value": "Organization RSIN"
     }
   ],
   "adFa0X": [

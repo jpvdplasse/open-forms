@@ -329,6 +329,12 @@
       "value": " bevat de oorspronkelijke bestandsnaam."
     }
   ],
+  "1tLYIe": [
+    {
+      "type": 0,
+      "value": "RSIN of the organization that registers the document in the Documents API. If left blank, the general configuration is used."
+    }
+  ],
   "1y4N2r": [
     {
       "type": 0,
@@ -4627,6 +4633,12 @@
     {
       "type": 0,
       "value": "Vereist authenticatie"
+    }
+  ],
+  "aarCQK": [
+    {
+      "type": 0,
+      "value": "Organization RSIN"
     }
   ],
   "adFa0X": [

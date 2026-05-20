@@ -135,6 +135,11 @@
     "description": "Open Forms variable label",
     "originalDefault": "Open Forms variable"
   },
+  "1tLYIe": {
+    "defaultMessage": "RSIN of the organization that registers the document in the Documents API. If left blank, the general configuration is used.",
+    "description": "Document upload: organizationRsin option help text",
+    "originalDefault": "RSIN of the organization that registers the document in the Documents API. If left blank, the general configuration is used."
+  },
   "1y4N2r": {
     "defaultMessage": "RSIN van de organisatie die eigenaar is van de zaak en documenten en deze aanmaakt.",
     "description": "ZGW APIs registration options 'organisationRSIN' help text",
@@ -2233,6 +2238,11 @@
     "defaultMessage": "Vereist authenticatie",
     "description": "Form step login required label",
     "originalDefault": "Login required?"
+  },
+  "aarCQK": {
+    "defaultMessage": "Organization RSIN",
+    "description": "Document upload: organizationRsin option label",
+    "originalDefault": "Organization RSIN"
   },
   "adFa0X": {
     "defaultMessage": "Component \"{label}\" gebruikt een prefill die (één van) de \"{requiredPlugin}\" inlogoptie(s) nodig heeft. Gebruik één of meerdere van deze inlogopties of verwijder de prefill-plugin.",
