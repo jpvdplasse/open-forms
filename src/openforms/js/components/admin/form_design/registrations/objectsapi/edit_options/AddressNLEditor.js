@@ -11,8 +11,8 @@ import {Checkbox} from 'components/admin/forms/Inputs';
 import {TargetPathSelect} from 'components/admin/forms/objects_api';
 import ErrorMessage from 'components/errors/ErrorMessage';
 
-import {ShowJSONSchemaToggle} from './edit_options/generic';
-import {fetchTargetPaths} from './utils';
+import {fetchTargetPaths} from '../utils';
+import {ShowJSONSchemaToggle} from './generic';
 
 const ADDRESSNL_NESTED_PROPERTIES = {
   postcode: {type: 'string'},
@@ -23,7 +23,7 @@ const ADDRESSNL_NESTED_PROPERTIES = {
   streetName: {type: 'string'},
 };
 
-export const AddressNlEditor = ({
+const AddressNLEditor = ({
   variable,
   components,
   namePrefix,
@@ -270,3 +270,5 @@ export const AddressNlEditor = ({
     </>
   );
 };
+
+export default AddressNLEditor;

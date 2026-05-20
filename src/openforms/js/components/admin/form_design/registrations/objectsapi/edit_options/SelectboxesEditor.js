@@ -7,10 +7,10 @@ import {Checkbox} from 'components/admin/forms/Inputs';
 import {TargetPathSelect} from 'components/admin/forms/objects_api';
 import ErrorMessage from 'components/errors/ErrorMessage';
 
-import {ShowJSONSchemaToggle} from './edit_options/generic';
-import {useFetchTargetPaths, useVariableJsonSchema} from './edit_options/hooks';
+import {ShowJSONSchemaToggle} from './generic';
+import {useFetchTargetPaths, useVariableJsonSchema} from './hooks';
 
-export const MapEditor = ({
+const SelectboxesEditor = ({
   variable,
   components,
   namePrefix,
@@ -21,11 +21,14 @@ export const MapEditor = ({
   backendOptions,
 }) => {
   const {setFieldValue} = useFormikContext();
-  const {geometryVariableKey} = backendOptions;
+  const {transformToList = []} = backendOptions;
 
-  const isGeometry = geometryVariableKey && geometryVariableKey === variable.key;
-
-  const variableSchema = useVariableJsonSchema(variable, components);
+  // don't use the destructured object with default, as that triggers hook re-evaluation!
+  const variableSchema = useVariableJsonSchema(
+    variable,
+    components,
+    backendOptions.transformToList
+  );
   const {loading, targetPaths, error} = useFetchTargetPaths({
     objectsApiGroup,
     objecttype,
@@ -45,26 +48,29 @@ export const MapEditor = ({
   return (
     <>
       <FormRow>
-        <Field name="geometryVariableKey" disabled={!!mappedVariable.targetPath}>
+        <Field name="transformToList">
           <Checkbox
-            name="geometryCheckbox"
+            name="transformToListCheckbox"
             label={
               <FormattedMessage
-                defaultMessage="Map to geometry field"
-                description="'Map to geometry field' checkbox label"
+                defaultMessage="Transform to list"
+                description="'Transform to list' checkbox label"
               />
             }
             helpText={
               <FormattedMessage
-                description="'Map to geometry field' checkbox help text"
-                defaultMessage="Whether to map this variable to the {geometryPath} attribute"
-                values={{geometryPath: <code>record.geometry</code>}}
+                description="'Transform to list' checkbox help text"
+                defaultMessage="If enabled, the selected values are sent as an array of values instead of an object with a boolean value for each option."
               />
             }
-            checked={isGeometry}
+            checked={transformToList.includes(variable.key) || false}
             onChange={event => {
-              const newValue = event.target.checked ? variable.key : undefined;
-              setFieldValue('geometryVariableKey', newValue);
+              const shouldBeTransformed = event.target.checked;
+              const newTransformToList = shouldBeTransformed
+                ? [...transformToList, variable.key]
+                : transformToList.filter(key => key !== variable.key);
+              setFieldValue('transformToList', newTransformToList);
+              setFieldValue(`${namePrefix}.targetPath`, undefined);
             }}
           />
         </Field>
@@ -78,14 +84,12 @@ export const MapEditor = ({
               description="'JSON Schema target' label"
             />
           }
-          disabled={isGeometry}
           noManageChildProps
         >
           <TargetPathSelect
             name={`${namePrefix}.targetPath`}
             isLoading={loading}
             targetPaths={targetPaths}
-            isDisabled={isGeometry}
           />
         </Field>
       </FormRow>
@@ -94,3 +98,5 @@ export const MapEditor = ({
     </>
   );
 };
+
+export default SelectboxesEditor;

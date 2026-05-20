@@ -9,16 +9,16 @@ import Fieldset from 'components/admin/forms/Fieldset';
 import FormRow from 'components/admin/forms/FormRow';
 import {TextInput} from 'components/admin/forms/Inputs';
 
-import {AddressNlEditor} from './AddressNlObjectsApiVariableConfigurationEditor';
-import {FileEditor} from './FileObjectsApiVariableConfigurationEditor';
-import {GenericEditor} from './GenericObjectsApiVariableConfigurationEditor';
-import {MapEditor} from './MapObjectsApiVariableConfigurationEditor';
-import {SelectboxesEditor} from './SelectboxesObjectsApiVariableConfigurationEditor';
+import AddressNLEditor from './edit_options/AddressNLEditor';
+import FileEditor from './edit_options/FileEditor';
+import MapEditor from './edit_options/MapEditor';
+import SelectboxesEditor from './edit_options/SelectboxesEditor';
+import {GenericEditor} from './edit_options/generic';
 
 // This can be updated with component-specific variable configuration options which do not
 // adhere to the generic behaviour (GenericEditor)
 const VARIABLE_CONFIGURATION_OPTIONS = {
-  addressNL: AddressNlEditor,
+  addressNL: AddressNLEditor,
   file: FileEditor,
   map: MapEditor,
   selectboxes: SelectboxesEditor,
