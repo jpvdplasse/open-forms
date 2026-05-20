@@ -14,6 +14,121 @@ Changelog
         `latest <https://open-forms.readthedocs.io/en/latest/changelog.html>`_ docs
         version.
 
+4.0.0-alpha.0 (2026-05-25)
+==========================
+
+This is an alpha release, meaning it is not finished yet or suitable for production use.
+
+Detailed changes
+----------------
+
+**Breaking changes**
+
+* [:backend:`6164`] Removed deprecated code (please review the instructions in the documentation
+  under **Installation** > **Upgrade details to Open Forms 4.0.0** for all the necessary details):
+
+  - Removed deprecated Camunda registration backend.
+  - Removed legacy OIDC callback endpoints for DigiD, eHerkenning and Organization.
+  - Removed option to the use old Formiojs form renderer.
+  - Removed JCC SOAP appointment plugin.
+  - Removed Elastic APM support.
+  - Changed default ZGW APIs public reference generation from case numbers to
+    Open Forms-generated references.
+  - Removed unused ``authentication_success`` signal.
+  - Marked the v2 cosign ``cosign_date`` property as required.
+  - Removed UMD bundle support.
+  - Removed Formio translations endpoint.
+  - Removed fallback css variables for ``backtotop-link`` component.
+  - Dropped support for Haal Centraal BRP Personen bevragen 1.3.
+  - [:backend:`6269`] Fixed the ``file`` component registration configuration being
+    limited to direct ``informatieobjecttype`` URL references. Now you can instead
+    specify the catalogue domain and RSIN and the description of the document type to use
+    instead.
+
+**New features**
+
+* [:backend:`5932`] Added 'use email for confirmation' option to the ``profile``
+  component.
+* [:backend:`5764`] Single step forms:
+
+  - [:backend:`6098`] Replaced the form attribute ``is_appointment`` with the attribute
+    ``type``. The ``type`` attribute allows you to choose from a couple options:
+    ``Regular`` (the default), ``Appointment`` and ``Single step``.
+  - [:backend:`6106`] Update the form designer UI for the new ``Single step`` form type.
+  - [:backend:`6211`] You can now filter forms based on their type.
+
+* Added some workarounds for StUF-ZDS when using Onegov zaaksysteem:
+
+  - [:backend:`6230`] Expose the submission ``completed_on`` timestamp as registration
+    variable.
+  - [:backend:`5951`] Support adding ``extraElementen`` mappings at the initatior level.
+  - [:backend:`6242`] Added option to comma-separate serialize ``extraElement`` values
+    for array-type data.
+
+* [:backend:`5959`] Added support for ``variables`` on the v3 form endpoint.
+* [:backend:`5676`] Added ``Case description`` and ``Case explanation`` configuration
+  fields to the ZGW APIs registration plugin.
+
+**Security fix**
+
+* Removed pip from production docker image.
+
+**Bugfixes**
+
+* [:backend:`6171`] Fixed missing required XML-attributes in StUF-ZDS messages.
+* [:backend:`6148`] Fixed crash in JSON schema generation when there's a fieldset inside
+  an editgrid.
+* [:backend:`6139`] Fixed wrong entity type in StUF-ZDS element for the cosigner details.
+* [:backend:`6199`] Fixed crash in outgoing requests when outgoing request logging is
+  enabled for responses that are GZIP-compressed and/or use chunked transfer encoding.
+* [:backend:`6181`] Fixed ``conditional.eq`` comparison with file component.
+* [:backend:`6181`, :backend:`5134`] Fixed simple conditionals ("frontend logic")
+  comparison not interpreting "empty" file upload fields correctly. This patch is a
+  workaround for a more complex structural fix.
+* Fixed missing structlog context propagation across threads, causing prefill (audit)
+  logs not to be saved in the database.
+* [:backend:`6213`] Fixed a crash when saving a form that only has metadata without any
+  steps.
+* [:backend:`6057`] Fixed missing configuration that caused ``application/hal+json``
+  responses not to be saved to the outgoing request logs.
+* [:backend:`6091`] Fixed Objects API and ZGW APIs registration backends using the
+  form's internal name for related documents like the confirmation PDF.
+* [:backend:`4699`] Fixed ``addressNL`` not using custom error messages for the
+  city/postcode during validation.
+* Fixed a crash in logic rules when it contains a property action that refers to a
+  non-existing component.
+* Fixed private form step fields being publicly available.
+* Fixed form logic check scripts.
+* [:backend:`6289`] Fixed crash when extracting variables used in template expressions
+  in ``else`` blocks in form definitions.
+* [:backend:`6286`] Fixed template variables not being extracted from the component
+  properties.
+
+**Project maintenance**
+
+* Updated bug report issue template by adding an 'affected renderer' option.
+* [:backend:`6018`] Cleaned up component serializers and simplified internal logic.
+* Updated project installation instructions.
+* Updated backend dependencies:
+
+  - gitpython
+  - django
+  - urllib3
+
+* Upgraded frontend dependencies to their latest versions:
+
+  - formio-builder
+
+* Updated documentation for:
+
+  - the form example decision tree.
+  - [:backend:`6170`] known bug and workaround for using template tags in WYSIWYG url's.
+  - soft required fields.
+  - dynamically setting selectboxes, select and radio options.
+  - frontend toolchain.
+
+* [:backend:`2705`] Cleaned up CSS code in admin and public UI.
+
 3.5.2 (2026-05-19)
 ==================
 
@@ -215,7 +330,7 @@ removing the old renderer and Textfield address autofill support.
 
 **Legacy logic evaluation**
 
-The old logic evaluation will be removed in Open Forms 4.0. We will prioritize bugfixes in the new 
+The old logic evaluation will be removed in Open Forms 4.0. We will prioritize bugfixes in the new
 logic evaluation to make sure this migration will be as smooth as possible.
 
 **File Registration tab**
@@ -236,7 +351,7 @@ We plan to change the default for "Use generated zaaknummer" to unchecked in an 
 
 **StUF-ZDS registration**
 
-The usage of the branch number retrieved from the form's submission data will be replaced in 
+The usage of the branch number retrieved from the form's submission data will be replaced in
 Open Forms 4.0 by favouring the branch number obtained through the eHerkenning login.
 
 **DigiD/eHerkenning OIDC Strict mode**
