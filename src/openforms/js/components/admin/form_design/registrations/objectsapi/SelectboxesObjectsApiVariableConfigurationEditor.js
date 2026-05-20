@@ -1,17 +1,14 @@
 import {useFormikContext} from 'formik';
-import {useContext} from 'react';
 import {FormattedMessage} from 'react-intl';
-import {useAsync} from 'react-use';
 
-import {APIContext} from 'components/admin/form_design/Context';
 import Field from 'components/admin/forms/Field';
 import FormRow from 'components/admin/forms/FormRow';
 import {Checkbox} from 'components/admin/forms/Inputs';
 import ErrorMessage from 'components/errors/ErrorMessage';
 
 import {MappedVariableTargetPathSelect} from './GenericObjectsApiVariableConfigurationEditor';
-import {asJsonSchema} from './utils';
-import {fetchTargetPaths} from './utils';
+import {ShowJSONSchemaToggle} from './edit_options/generic';
+import {useFetchTargetPaths, useVariableJsonSchema} from './edit_options/hooks';
 
 export const SelectboxesEditor = ({
   variable,
@@ -24,29 +21,21 @@ export const SelectboxesEditor = ({
   objecttypeVersion,
   backendOptions,
 }) => {
-  const {csrftoken} = useContext(APIContext);
   const {setFieldValue} = useFormikContext();
   const {transformToList = []} = backendOptions;
 
-  const transformationNeeded = transformToList.includes(variable.key);
-
-  // Load all the possible target paths in parallel depending on if the data should be
-  // transformed or not
-  const {
-    loading,
-    value: targetPaths,
-    error,
-  } = useAsync(async () => {
-    const results = fetchTargetPaths(
-      csrftoken,
-      objectsApiGroup,
-      objecttype,
-      objecttypeVersion,
-      asJsonSchema(variable, components, transformToList)
-    );
-
-    return results;
-  }, [transformationNeeded]);
+  // don't use the destructured object with default, as that triggers hook re-evaluation!
+  const variableSchema = useVariableJsonSchema(
+    variable,
+    components,
+    backendOptions.transformToList
+  );
+  const {loading, targetPaths, error} = useFetchTargetPaths({
+    objectsApiGroup,
+    objecttype,
+    objecttypeVersion,
+    variableJsonSchema: variableSchema,
+  });
 
   if (error)
     return (

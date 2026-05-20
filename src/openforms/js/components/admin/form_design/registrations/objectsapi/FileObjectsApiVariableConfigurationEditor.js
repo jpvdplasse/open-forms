@@ -1,9 +1,6 @@
 import {useFormikContext} from 'formik';
-import {useContext} from 'react';
 import {FormattedMessage} from 'react-intl';
-import {useAsync} from 'react-use';
 
-import {APIContext} from 'components/admin/form_design/Context';
 import Field from 'components/admin/forms/Field';
 import FormRow from 'components/admin/forms/FormRow';
 import {TextInput} from 'components/admin/forms/Inputs';
@@ -11,8 +8,7 @@ import ErrorMessage from 'components/errors/ErrorMessage';
 
 import {MappedVariableTargetPathSelect} from './GenericObjectsApiVariableConfigurationEditor';
 import {ShowJSONSchemaToggle} from './edit_options/generic';
-import {asJsonSchema} from './utils';
-import {fetchTargetPaths} from './utils';
+import {useFetchTargetPaths, useVariableJsonSchema} from './edit_options/hooks';
 
 /**
  * Registration options UI/editor for file components.
@@ -28,24 +24,15 @@ export const FileEditor = ({
   objecttypeVersion,
   backendOptions,
 }) => {
-  const {csrftoken} = useContext(APIContext);
   const {getFieldProps} = useFormikContext();
 
-  const {
-    loading,
-    value: targetPaths,
-    error,
-  } = useAsync(async () => {
-    const results = fetchTargetPaths(
-      csrftoken,
-      objectsApiGroup,
-      objecttype,
-      objecttypeVersion,
-      asJsonSchema(variable, components)
-    );
-
-    return results;
-  }, []);
+  const variableSchema = useVariableJsonSchema(variable, components);
+  const {loading, targetPaths, error} = useFetchTargetPaths({
+    objectsApiGroup,
+    objecttype,
+    objecttypeVersion,
+    variableJsonSchema: variableSchema,
+  });
 
   if (error)
     return (

@@ -1,18 +1,14 @@
 import {FieldArray, useFormikContext} from 'formik';
 import PropTypes from 'prop-types';
-import {useContext} from 'react';
 import {FormattedMessage} from 'react-intl';
-import {useAsync} from 'react-use';
 
-import {APIContext} from 'components/admin/form_design/Context';
 import Field from 'components/admin/forms/Field';
 import FormRow from 'components/admin/forms/FormRow';
 import {TargetPathSelect} from 'components/admin/forms/objects_api';
 import ErrorMessage from 'components/errors/ErrorMessage';
 
 import {ShowJSONSchemaToggle} from './edit_options/generic';
-import {asJsonSchema} from './utils';
-import {fetchTargetPaths} from './utils';
+import {useFetchTargetPaths, useVariableJsonSchema} from './edit_options/hooks';
 
 /**
  * Hack-ish way to manage the variablesMapping state for one particular entry.
@@ -86,25 +82,13 @@ export const GenericEditor = ({
   objectsApiGroup,
   objecttypeVersion,
 }) => {
-  const {csrftoken} = useContext(APIContext);
-
-  // Load all the possible target paths in parallel depending on if the data should be
-  // transformed or not
-  const {
-    loading,
-    value: targetPaths,
-    error,
-  } = useAsync(async () => {
-    const results = fetchTargetPaths(
-      csrftoken,
-      objectsApiGroup,
-      objecttype,
-      objecttypeVersion,
-      asJsonSchema(variable, components)
-    );
-
-    return results;
-  }, []);
+  const variableSchema = useVariableJsonSchema(variable, components);
+  const {loading, targetPaths, error} = useFetchTargetPaths({
+    objectsApiGroup,
+    objecttype,
+    objecttypeVersion,
+    variableJsonSchema: variableSchema,
+  });
 
   if (error)
     return (
