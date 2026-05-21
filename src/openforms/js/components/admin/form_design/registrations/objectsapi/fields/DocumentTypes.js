@@ -12,19 +12,12 @@ import {
   CatalogueSelect,
   CopyDocumentTypesConfig,
   DocumentTypeSelect as GenericDocumentTypeSelect,
-  useGetDocumentTypes,
 } from 'components/admin/forms/zgw';
 import {WarningIcon} from 'components/admin/icons';
 
-import {useResolveCatalogue} from '../hooks';
+import {useGetDocumentTypes, useResolveCatalogue} from '../hooks';
 
-// Data fetching
-
-const IOT_ENDPOINT = '/api/v2/objects-api/document-types';
-
-// Components
-
-const DocumentType = ({name, label, loading, documentTypes, isDisabled, helpText}) => {
+export const DocumentType = ({name, label, loading, documentTypes, isDisabled, helpText}) => {
   const intl = useIntl();
   const [{value}] = useField(name);
 
@@ -112,11 +105,7 @@ export const DocumentTypesFieldset = () => {
     }));
   }, [previousCatalogueUrl, catalogueUrl]);
 
-  const query = useMemo(
-    () => ({objects_api_group: objectsApiGroup, catalogue_url: catalogueUrl}),
-    [objectsApiGroup, catalogueUrl]
-  );
-  const {loading, documentTypes, error} = useGetDocumentTypes(IOT_ENDPOINT, query);
+  const {loading, documentTypes, error} = useGetDocumentTypes(objectsApiGroup, catalogueUrl);
   if (error) throw error;
 
   const documentTypeProps = {

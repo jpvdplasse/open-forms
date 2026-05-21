@@ -1,6 +1,7 @@
 import {useField, useFormikContext} from 'formik';
 import {FormattedMessage} from 'react-intl';
 
+import {DocumentType} from 'components/admin/form_design/registrations/objectsapi/fields/DocumentTypes';
 import Field from 'components/admin/forms/Field';
 import FormRow from 'components/admin/forms/FormRow';
 import {TextInput} from 'components/admin/forms/Inputs';
@@ -8,6 +9,7 @@ import ReactSelect from 'components/admin/forms/ReactSelect';
 import {TargetPathSelect} from 'components/admin/forms/objects_api';
 import ErrorMessage from 'components/errors/ErrorMessage';
 
+import {useGetDocumentTypes, useResolveCatalogue} from '../hooks';
 import {ShowJSONSchemaToggle} from './generic';
 import {useFetchTargetPaths, useVariableJsonSchema} from './hooks';
 
@@ -20,23 +22,23 @@ const FileEditor = ({
   namePrefix,
   mappedVariable,
   objecttype,
-  objectsApiGroup,
+  objectsApiGroup = null,
   objecttypeVersion,
   backendOptions,
 }) => {
-  const {catalogue} = backendOptions;
+  const {catalogue = undefined} = backendOptions;
 
   const variableSchema = useVariableJsonSchema(variable, components);
-  const {loading, targetPaths, error} = useFetchTargetPaths({
+  const {
+    loading: loadingTargetPaths,
+    targetPaths,
+    error,
+  } = useFetchTargetPaths({
     objectsApiGroup,
     objecttype,
     objecttypeVersion,
     variableJsonSchema: variableSchema,
   });
-
-  if (catalogue) {
-    console.log(catalogue);
-  }
 
   if (error) {
     return (
@@ -51,7 +53,12 @@ const FileEditor = ({
 
   return (
     <>
-      <TargetPath namePrefix={namePrefix} loading={loading} targetPaths={targetPaths} />
+      <TargetPath namePrefix={namePrefix} loading={loadingTargetPaths} targetPaths={targetPaths} />
+      <CustomDocumentType
+        namePrefix={namePrefix}
+        objectsApiGroup={objectsApiGroup}
+        catalogue={catalogue}
+      />
       <OrganizationRSIN namePrefix={namePrefix} />
       <ConfidentialityLevel namePrefix={namePrefix} />
       <Title namePrefix={namePrefix} />
@@ -81,6 +88,52 @@ const TargetPath = ({namePrefix, loading, targetPaths}) => (
     </Field>
   </FormRow>
 );
+
+const CustomDocumentType = ({namePrefix, objectsApiGroup, catalogue}) => {
+  const {
+    loading: loadingCatalogues,
+    error: cataloguesError,
+    catalogueUrl,
+    catalogueValue,
+  } = useResolveCatalogue(objectsApiGroup, catalogue);
+  if (cataloguesError) throw cataloguesError;
+
+  const {
+    loading: loadingDocumentTypes,
+    documentTypes,
+    error: documentTypesError,
+  } = useGetDocumentTypes(objectsApiGroup, catalogueUrl);
+  if (documentTypesError) throw documentTypesError;
+
+  return (
+    <DocumentType
+      name={`${namePrefix}.options.documentTypeDescription`}
+      label={
+        <FormattedMessage
+          description="Document upload: document type option label"
+          defaultMessage="Document type"
+        />
+      }
+      helpText={
+        <FormattedMessage
+          description="Document upload: document type option help text"
+          defaultMessage={`Save the document in the Documents API with the selected
+          document type. The document type will be resolved against the
+          {catalogueLabel, select,
+            empty {specified}
+            other {''{catalogueLabel}''}
+          } catalogue in the plugin options. If left blank, the
+          default attachment document type configured in the plugin options will be used.
+          `}
+          values={{catalogueLabel: catalogueValue?.label ?? 'empty'}}
+        />
+      }
+      loading={loadingCatalogues || loadingDocumentTypes}
+      documentTypes={documentTypes}
+      isDisabled={!catalogueUrl}
+    />
+  );
+};
 
 const OrganizationRSIN = ({namePrefix}) => {
   const [props] = useField(`${namePrefix}.options.organizationRsin`);
