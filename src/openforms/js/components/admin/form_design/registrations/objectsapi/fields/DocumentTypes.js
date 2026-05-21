@@ -2,7 +2,7 @@ import {useField, useFormikContext} from 'formik';
 import PropTypes from 'prop-types';
 import {useContext, useEffect, useMemo} from 'react';
 import {FormattedMessage, useIntl} from 'react-intl';
-import {useAsync, usePrevious} from 'react-use';
+import {usePrevious} from 'react-use';
 
 import {FeatureFlagsContext} from 'components/admin/form_design/Context';
 import Field from 'components/admin/forms/Field';
@@ -12,25 +12,15 @@ import {
   CatalogueSelect,
   CopyDocumentTypesConfig,
   DocumentTypeSelect as GenericDocumentTypeSelect,
-  getCatalogueOption,
-  groupAndSortCatalogueOptions,
   useGetDocumentTypes,
 } from 'components/admin/forms/zgw';
 import {WarningIcon} from 'components/admin/icons';
-import {get} from 'utils/fetch';
+
+import {useResolveCatalogue} from '../hooks';
 
 // Data fetching
 
-const CATALOGUES_ENDPOINT = '/api/v2/objects-api/catalogues';
 const IOT_ENDPOINT = '/api/v2/objects-api/document-types';
-
-const getCatalogues = async apiGroupID => {
-  const response = await get(CATALOGUES_ENDPOINT, {objects_api_group: apiGroupID});
-  if (!response.ok) {
-    throw new Error('Loading available catalogues failed');
-  }
-  return groupAndSortCatalogueOptions(response.data);
-};
 
 // Components
 
@@ -97,16 +87,11 @@ export const DocumentTypesFieldset = () => {
   // fetch available catalogues and re-use the result
   const {
     loading: loadingCatalogues,
-    value: catalogueOptionGroups = [],
+    catalogueOptionGroups,
     error: cataloguesError,
-  } = useAsync(async () => {
-    if (!objectsApiGroup) return [];
-    return await getCatalogues(objectsApiGroup);
-  }, [objectsApiGroup]);
+    catalogueUrl,
+  } = useResolveCatalogue(objectsApiGroup, catalogue);
   if (cataloguesError) throw cataloguesError;
-
-  const catalogueValue = getCatalogueOption(catalogueOptionGroups, catalogue || {});
-  const catalogueUrl = catalogueValue?.url;
   const previousCatalogueUrl = usePrevious(catalogueUrl);
 
   // if the catalogue changes, reset the selected document types
