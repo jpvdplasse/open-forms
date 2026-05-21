@@ -2057,6 +2057,12 @@
       "value": "numSteps"
     }
   ],
+  "EKQv9H": [
+    {
+      "type": 0,
+      "value": "Confidentiality"
+    }
+  ],
   "ENyg8G": [
     {
       "type": 0,
@@ -2477,6 +2483,12 @@
     {
       "type": 0,
       "value": "BRP Personen purpose limitation header value"
+    }
+  ],
+  "Hcwvos": [
+    {
+      "type": 0,
+      "value": "Title"
     }
   ],
   "HdRpKT": [
@@ -4219,6 +4231,12 @@
     {
       "type": 0,
       "value": "Owner identifier"
+    }
+  ],
+  "X36TOT": [
+    {
+      "type": 0,
+      "value": "Optional custom title for the document. By default, the form name is used."
     }
   ],
   "XAKzo5": [
@@ -7615,6 +7633,12 @@
     {
       "type": 0,
       "value": "Translation enabled"
+    }
+  ],
+  "xUV58k": [
+    {
+      "type": 0,
+      "value": "Indication of the level to which extent the document is meant to be public. Only provide this if you wish to override the default from the configured document type."
     }
   ],
   "xUt2+r": [

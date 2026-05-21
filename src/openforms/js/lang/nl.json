@@ -889,6 +889,11 @@
     "description": "Description of which key is duplicated in which steps.",
     "originalDefault": "<code>{componentKey}</code>: in {numSteps, plural, =1 {{tail}} other {{lead} and {tail}} }"
   },
+  "EKQv9H": {
+    "defaultMessage": "Confidentiality",
+    "description": "Document upload: confidentialityLevel label",
+    "originalDefault": "Confidentiality"
+  },
   "ENyg8G": {
     "defaultMessage": "Het formulier heeft meerdere mede-ondertekencomponenten. Zorg ervoor dat dit er maximaal één is.",
     "description": "Too many cosign components",
@@ -1140,6 +1145,11 @@
     "defaultMessage": "BRP Personen 'doelbinding' header-waarde",
     "description": "Form 'BRP Personen purpose limitation header value' field label",
     "originalDefault": "BRP Personen purpose limitation header value"
+  },
+  "Hcwvos": {
+    "defaultMessage": "Title",
+    "description": "Document upload: title option label",
+    "originalDefault": "Title"
   },
   "HdRpKT": {
     "defaultMessage": "Versie",
@@ -2033,6 +2043,11 @@
     "defaultMessage": "Identificatie-attribuut",
     "description": "Objects API registration: authAttributePath label",
     "originalDefault": "Owner identifier"
+  },
+  "X36TOT": {
+    "defaultMessage": "Optional custom title for the document. By default, the form name is used.",
+    "description": "Document upload: title option help text",
+    "originalDefault": "Optional custom title for the document. By default, the form name is used."
   },
   "XAKzo5": {
     "defaultMessage": "Authenticatie automatische login",
@@ -3589,6 +3604,11 @@
     "defaultMessage": "Vertalingen ingeschakeld",
     "description": "Form translation enabled field label",
     "originalDefault": "Translation enabled"
+  },
+  "xUV58k": {
+    "defaultMessage": "Indication of the level to which extent the document is meant to be public. Only provide this if you wish to override the default from the configured document type.",
+    "description": "Document upload: confidentialityLevel option help text",
+    "originalDefault": "Indication of the level to which extent the document is meant to be public. Only provide this if you wish to override the default from the configured document type."
   },
   "xcp+LU": {
     "defaultMessage": "Formulierdefinitie aanmaken",
