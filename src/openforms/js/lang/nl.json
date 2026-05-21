@@ -3338,6 +3338,11 @@
     "description": "Family members filters: minimum age field label",
     "originalDefault": "Minimum age"
   },
+  "sdnxHe": {
+    "defaultMessage": "Document type",
+    "description": "Document upload: document type option label",
+    "originalDefault": "Document type"
+  },
   "sokfvf": {
     "defaultMessage": "De service waar de gegevens naartoe worden gestuurd.",
     "description": "JSON registration options 'serviceSelect' helpText",
@@ -3493,6 +3498,11 @@
     "defaultMessage": "E-mailinhoud",
     "description": "Email registration: content fieldset title",
     "originalDefault": "Content"
+  },
+  "vayfq9": {
+    "defaultMessage": "Save the document in the Documents API with the selected document type. The document type will be resolved against the {catalogueLabel, select, empty {specified} other {''{catalogueLabel}''} } catalogue in the plugin options. If left blank, the default attachment document type configured in the plugin options will be used.",
+    "description": "Document upload: document type option help text",
+    "originalDefault": "Save the document in the Documents API with the selected document type. The document type will be resolved against the {catalogueLabel, select, empty {specified} other {''{catalogueLabel}''} } catalogue in the plugin options. If left blank, the default attachment document type configured in the plugin options will be used."
   },
   "viEfGU": {
     "defaultMessage": "De inhoud van bevestigingspagina na het versturen van de inzending. Dit sjabloon mag variabelen bevatten met inzendings-gegevens. Laat dit veld leeg om de standaardinstelling te gebruiken.",

@@ -3314,6 +3314,11 @@
     "description": "Family members filters: minimum age field label",
     "originalDefault": "Minimum age"
   },
+  "sdnxHe": {
+    "defaultMessage": "Document type",
+    "description": "Document upload: document type option label",
+    "originalDefault": "Document type"
+  },
   "sokfvf": {
     "defaultMessage": "The service to send the data to.",
     "description": "JSON registration options 'serviceSelect' helpText",
@@ -3468,6 +3473,11 @@
     "defaultMessage": "Content",
     "description": "Email registration: content fieldset title",
     "originalDefault": "Content"
+  },
+  "vayfq9": {
+    "defaultMessage": "Save the document in the Documents API with the selected document type. The document type will be resolved against the {catalogueLabel, select, empty {specified} other {''{catalogueLabel}''} } catalogue in the plugin options. If left blank, the default attachment document type configured in the plugin options will be used.",
+    "description": "Document upload: document type option help text",
+    "originalDefault": "Save the document in the Documents API with the selected document type. The document type will be resolved against the {catalogueLabel, select, empty {specified} other {''{catalogueLabel}''} } catalogue in the plugin options. If left blank, the default attachment document type configured in the plugin options will be used."
   },
   "viEfGU": {
     "defaultMessage": "The content of the submission confirmation page. It can contain variables that will be templated from the submitted form data. If not specified, the global template will be used.",

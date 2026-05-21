@@ -7049,6 +7049,12 @@
       "value": "Minimale leeftijd"
     }
   ],
+  "sdnxHe": [
+    {
+      "type": 0,
+      "value": "Document type"
+    }
+  ],
   "sgmcmf": [
     {
       "type": 0,
@@ -7403,6 +7409,46 @@
     {
       "type": 0,
       "value": "E-mailinhoud"
+    }
+  ],
+  "vayfq9": [
+    {
+      "type": 0,
+      "value": "Save the document in the Documents API with the selected document type. The document type will be resolved against the "
+    },
+    {
+      "options": {
+        "empty": {
+          "value": [
+            {
+              "type": 0,
+              "value": "specified"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "'"
+            },
+            {
+              "type": 1,
+              "value": "catalogueLabel"
+            },
+            {
+              "type": 0,
+              "value": "'"
+            }
+          ]
+        }
+      },
+      "type": 5,
+      "value": "catalogueLabel"
+    },
+    {
+      "type": 0,
+      "value": " catalogue in the plugin options. If left blank, the default attachment document type configured in the plugin options will be used."
     }
   ],
   "ve3rsH": [
