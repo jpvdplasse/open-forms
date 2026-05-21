@@ -11,6 +11,10 @@ import {
   mockObjecttypeVersionsGet,
   mockObjecttypesGet,
 } from 'components/admin/form_design/registrations/objectsapi/mocks';
+import {
+  mockCataloguesGet,
+  mockDocumentTypesGet,
+} from 'components/admin/form_design/registrations/objectsapi/mocks';
 import {FormDecorator} from 'components/admin/form_design/story-decorators';
 import {serializeValue} from 'components/admin/forms/VariableMapping';
 import {mockYiviAttributeGroupsGet} from 'components/admin/forms/yivi/mocks';
@@ -2133,6 +2137,10 @@ export const FileMapping = {
           objectsApiGroup: 'group-1',
           objecttype: '2c77babf-a967-4057-9969-0200320d23f1',
           objecttypeVersion: 2,
+          catalogue: {
+            domain: 'TEST',
+            rsin: '000000000',
+          },
           variablesMapping: [],
         },
       },
@@ -2198,6 +2206,8 @@ export const FileMapping = {
             },
           ],
         }),
+        mockCataloguesGet(),
+        mockDocumentTypesGet(),
       ],
     },
   },
