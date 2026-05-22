@@ -1,0 +1,1 @@
+OIDC_VERID_IDENTIFIER = "oidc-verid"

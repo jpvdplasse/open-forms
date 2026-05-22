@@ -141,6 +141,34 @@ class YiviContext(TypedDict):
     authorizee: YiviAuthorizee
 
 
+class VerIDLegalSubject(TypedDict):
+    identifierType: Literal["bsn", "kvkNummer", "opaque"]
+    identifier: str
+    additionalInformation: dict
+
+
+class VerIDAuthorizee(TypedDict):
+    legalSubject: VerIDLegalSubject
+
+
+# Experimental — shape mirrors YiviContext since both are wallet-disclosure providers.
+class VerIDContext(TypedDict):
+    source: Literal["verid"]
+    levelOfAssurance: Literal[
+        "urn:etoegang:core:assurance-class:loa1",
+        "urn:etoegang:core:assurance-class:loa2",
+        "urn:etoegang:core:assurance-class:loa2plus",
+        "urn:etoegang:core:assurance-class:loa3",
+        "urn:etoegang:core:assurance-class:loa4",
+        "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport",
+        "urn:oasis:names:tc:SAML:2.0:ac:classes:MobileTwoFactorContract",
+        "urn:oasis:names:tc:SAML:2.0:ac:classes:Smartcard",
+        "urn:oasis:names:tc:SAML:2.0:ac:classes:SmartcardPKI",
+        "unknown",
+    ]
+    authorizee: VerIDAuthorizee
+
+
 class EIDASNaturalPersonSubject(TypedDict):
     identifierType: Literal["bsn", "opaque"]
     identifier: str
@@ -210,4 +238,5 @@ type AnyAuthContext = (
     | EIDASCompanyContext
     | EmployeeContext
     | YiviContext
+    | VerIDContext
 )

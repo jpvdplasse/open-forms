@@ -18,6 +18,9 @@ from openforms.authentication.contrib.digid_eherkenning_oidc.oidc_plugins.consta
 from openforms.authentication.contrib.org_oidc.oidc_plugins.constants import (
     OIDC_ORG_IDENTIFIER,
 )
+from openforms.authentication.contrib.verid_oidc.oidc_plugins.constants import (
+    OIDC_VERID_IDENTIFIER,
+)
 from openforms.authentication.contrib.yivi_oidc.oidc_plugins.constants import (
     OIDC_YIVI_IDENTIFIER,
 )
@@ -275,6 +278,31 @@ class OFOIDCClientFactory(OIDCClientFactory):
                             "bsn_claim_path": ["bsn"],
                             "kvk_claim_path": ["kvk"],
                             "pseudo_claim_path": ["pbdf.sidn-pbdf.irma.pseudonym"],
+                        }
+                    ),
+                }
+            ),
+        )
+        with_verid = factory.Trait(
+            identifier=OIDC_VERID_IDENTIFIER,
+            oidc_rp_scopes_list=["openid"],
+            options=factory.Dict(
+                {
+                    "loa_settings": factory.Dict(
+                        {
+                            "bsn_loa_claim_path": [],
+                            "bsn_default_loa": "",
+                            "bsn_loa_value_mapping": [],
+                            "kvk_loa_claim_path": [],
+                            "kvk_default_loa": "",
+                            "kvk_loa_value_mapping": [],
+                        }
+                    ),
+                    "identity_settings": factory.Dict(
+                        {
+                            "bsn_claim_path": ["bsn"],
+                            "kvk_claim_path": ["kvk"],
+                            "pseudo_claim_path": ["sub"],
                         }
                     ),
                 }

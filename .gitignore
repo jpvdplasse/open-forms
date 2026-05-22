@@ -62,3 +62,8 @@ src/token_exchange
 # docker volumes
 setup_configuration/*
 !setup_configuration/.gitkeep
+
+# verid-oidc local-dev artifacts
+.venv/
+docker-compose.override.yml
+/ver-id-node-client-*.tgz
