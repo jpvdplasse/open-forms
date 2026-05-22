@@ -25,6 +25,12 @@ OIDC_PKCE_CODE_CHALLENGE_METHOD = "S256"
 OIDC_VERID_EXPECTED_ISS = "urn:ver-id:crypto:key@production:oauth/v1"
 OIDC_VERID_EXPECTED_AUD = "urn:ver-id:crypto:key@external:*"
 
+# Run Celery tasks synchronously in-process. Without this the demo would
+# need a separate Celery worker for submission post-processing — form
+# submissions hang on "processing" otherwise.
+CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_EAGER_PROPAGATES = True
+
 # allow_redirect_url() explicitly skips the wildcard in ALLOWED_HOSTS, so list
 # the local hosts here so the auto-login flow's `next` URL is accepted.
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "*"]
