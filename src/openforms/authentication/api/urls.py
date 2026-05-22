@@ -13,5 +13,9 @@ urlpatterns = [
 urlpatterns += [
     path(
         "plugins/yivi/", include("openforms.authentication.contrib.yivi_oidc.api.urls")
-    )
+    ),
+    path(
+        "plugins/verid/",
+        include("openforms.authentication.contrib.verid_oidc.api.urls"),
+    ),
 ]

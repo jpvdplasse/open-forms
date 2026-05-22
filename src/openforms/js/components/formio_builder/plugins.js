@@ -33,6 +33,24 @@ export const getPrefillAttributes = async (plugin, context = {}) => {
     return attributes.map(([attribute, label]) => ({id: attribute, label}));
   }
 
+  // Ver.iD claim names are scoped to the disclosure flow selected on the
+  // form's auth backend. If we know the flow, query its claims; otherwise
+  // fall back to an empty list.
+  if (plugin === 'verid') {
+    const {authBackends = []} = context;
+    const veridBackend = authBackends.find(b => b.backend === 'verid_oidc');
+    // Tolerate both camelCase (JSON wire format) and snake_case (raw model
+    // dict) — should be camelCase in practice but defensive doesn't hurt.
+    const opts = veridBackend?.options || {};
+    const clientId = opts.clientId || opts.client_id || '';
+    if (!clientId) return [];
+    const resp = await get(
+      `/api/v2/authentication/plugins/verid/disclosures/${encodeURIComponent(clientId)}/claims`
+    );
+    if (!resp.ok) return [];
+    return (resp.data || []).map(c => ({id: c.claim, label: c.name || c.claim}));
+  }
+
   const resp = await get(`/api/v2/prefill/plugins/${plugin}/attributes`);
   return resp.data;
 };

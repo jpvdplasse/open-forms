@@ -18,7 +18,8 @@
     "format": "prettier --write 'src/openforms/{js,scss}/**/*.{js,scss,mdx}'",
     "checkformat": "prettier --check 'src/openforms/{js,scss}/**/*.{js,scss,mdx}'",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build --webpack-stats-json"
+    "build-storybook": "storybook build --webpack-stats-json",
+    "postinstall": "patch-package"
   },
   "repository": {
     "type": "git",
@@ -114,6 +115,7 @@
     "mini-css-extract-plugin": "^0.11.1",
     "msw": "^2.6.5",
     "msw-storybook-addon": "^2.0.4",
+    "patch-package": "^8.0.1",
     "postcss": "^8.0.8",
     "postcss-loader": "^4.0.1",
     "prettier": "^3.3.0",

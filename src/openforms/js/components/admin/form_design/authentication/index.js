@@ -1,5 +1,6 @@
 import DigidOptionsForm from './digid/DigidOptionsForm';
 import OrgOidcOptionsForm from './org/OrgOidcOptionsForm';
+import VeridOptionsForm from './verid/VeridOptionsForm';
 import YiviOptionsForm from './yivi/YiviOptionsForm';
 
 /**
@@ -15,6 +16,9 @@ export const BACKEND_OPTIONS_FORMS = {
   },
   yivi_oidc: {
     form: YiviOptionsForm,
+  },
+  verid_oidc: {
+    form: VeridOptionsForm,
   },
   'org-oidc': {
     form: OrgOidcOptionsForm,
