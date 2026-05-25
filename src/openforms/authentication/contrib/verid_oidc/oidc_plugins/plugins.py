@@ -103,8 +103,8 @@ class VerIDPlugin(AnonymousUserOIDCPlugin):
     def get_claim_processing_instructions(
         self, claims: JSONObject, config: OIDCClient
     ) -> ClaimProcessingInstructions:
-        identity = config.options["identity_settings"]
-        loa = config.options["loa_settings"]
+        identity = config.options.get("identity_settings", {})
+        loa = config.options.get("loa_settings", {})
 
         bsn_path = identity.get("bsn_claim_path") or []
         kvk_path = identity.get("kvk_claim_path") or []
@@ -194,7 +194,7 @@ class VerIDPlugin(AnonymousUserOIDCPlugin):
     def get_extra_params(
         self, request: HttpRequest, extra_params: GetParams
     ) -> GetParams:
-        # Ver.iD encodes the requested attributes inside the disclosure flow
-        # definition (in Ver.iD Studio, keyed by the OIDC client_id). No
-        # per-request scope synthesis required.
+        # Ver.iD requires scope=disclosure (not openid). Override it here so
+        # the OIDCClient record doesn't need manual scope configuration.
+        extra_params["scope"] = "disclosure"
         return extra_params
