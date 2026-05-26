@@ -88,3 +88,52 @@ class DisclosureClaimsListView(_BaseAdminView):
                 {"detail": str(exc)}, status=status.HTTP_502_BAD_GATEWAY
             )
         return Response(claims)
+
+
+class FlowClaimsView(_BaseAdminView):
+    """Return ``[{id, label}]`` claims for a disclosure flow identified by
+    ``clientId`` query parameter.
+
+    Used by the generic ``customAttributesUrl`` prefill mechanism — the form
+    builder forwards the auth backend options as query params so this endpoint
+    can scope the claim list to the selected flow.
+    """
+
+    def get(self, request, *args, **kwargs):
+        client_id = (
+            request.query_params.get("clientId")
+            or request.query_params.get("client_id")
+            or ""
+        )
+        if not client_id:
+            return Response([])
+
+        try:
+            _client, config = _resolve_graphql_config()
+        except GraphQLNotConfigured as exc:
+            return Response(
+                {"detail": str(exc)}, status=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
+        try:
+            disclosures = list_disclosures(config)
+        except GraphQLError as exc:
+            return Response(
+                {"detail": str(exc)}, status=status.HTTP_502_BAD_GATEWAY
+            )
+
+        match = next(
+            (d for d in disclosures if d["uuid"] == client_id), None
+        )
+        if match is None or not match.get("mapping_verification_uuid"):
+            return Response([])
+
+        try:
+            claims = get_disclosure_claims(config, match["mapping_verification_uuid"])
+        except GraphQLError as exc:
+            return Response(
+                {"detail": str(exc)}, status=status.HTTP_502_BAD_GATEWAY
+            )
+
+        return Response(
+            [{"id": c["claim"], "label": c.get("name") or c["claim"]} for c in claims]
+        )

@@ -35,11 +35,16 @@ export const getPrefillAttributes = async (plugin, context = {}) => {
 
   // If the plugin declares a custom attributes endpoint, use it instead of the
   // default static list. This lets third-party plugins supply context-aware
-  // attributes without requiring changes to this file.
-  const {availablePrefillPlugins = []} = context;
+  // attributes without requiring changes to this file.  The matching auth
+  // backend's options are forwarded as query parameters so the endpoint can
+  // scope the attribute list to the selected authentication flow.
+  const {availablePrefillPlugins = [], authBackends = []} = context;
   const pluginMeta = availablePrefillPlugins.find(p => p.id === plugin);
   if (pluginMeta?.customAttributesUrl) {
-    const resp = await get(pluginMeta.customAttributesUrl);
+    const requiredPlugins = pluginMeta.requiresAuthPlugin || [];
+    const authBackend = authBackends.find(b => requiredPlugins.includes(b.backend));
+    const queryParams = authBackend?.options || {};
+    const resp = await get(pluginMeta.customAttributesUrl, queryParams);
     if (!resp.ok) return [];
     return (resp.data || []).map(item => ({id: item.id, label: item.label || item.id}));
   }

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import DisclosureClaimsListView, DisclosuresListView
+from .views import DisclosureClaimsListView, DisclosuresListView, FlowClaimsView
 
 app_name = "authentication_verid"
 
@@ -14,5 +14,10 @@ urlpatterns = [
         "disclosures/<uuid:uuid>/claims",
         DisclosureClaimsListView.as_view(),
         name="disclosure-claim-list",
+    ),
+    path(
+        "flow-claims",
+        FlowClaimsView.as_view(),
+        name="flow-claims",
     ),
 ]
