@@ -11,14 +11,18 @@ Python:
 JS (admin UI):
 - `src/openforms/js/components/admin/form_design/authentication/verid/` — VeridOptionsForm + Fields
 - `src/openforms/js/components/admin/form_design/authentication/index.js` — registered `verid_oidc` in `BACKEND_OPTIONS_FORMS`
-- `src/openforms/js/components/formio_builder/plugins.js` — `if (plugin === 'verid')` branch in `getPrefillAttributes`
+Upstream-source touchpoints (generic — no Ver.iD references):
+- `src/openforms/authentication/types.py` — `PluginAuthContext` TypedDict in `AnyAuthContext` union (generic for any `manage_auth_context` plugin)
+- `src/openforms/prefill/base.py` — `get_custom_attributes_url()` hook
+- `src/openforms/prefill/api/serializers.py` — `customAttributesUrl` field exposed on prefill plugin listing
+- `src/openforms/js/components/formio_builder/plugins.js` — generic `customAttributesUrl` handler (forwards auth backend options as query params)
+- `src/openforms/translations/api/urls.py` — `i18n/formio/<lang>` stub for SDK 3.5.0 compatibility
 
-Upstream-source touchpoints:
+Plugin-specific touchpoints:
 - `src/openforms/conf/base.py` — two `INSTALLED_APPS` entries
-- `src/openforms/authentication/types.py` — `VerIDContext` / `VerIDAuthorizee` / `VerIDLegalSubject` TypedDicts and `AnyAuthContext` union member
 - `src/openforms/authentication/api/urls.py` — URL include for `plugins/verid/`
 - `src/openforms/contrib/auth_oidc/tests/factories.py` — `with_verid` factory trait
-- `src/openforms/translations/api/urls.py` — `i18n/formio/<lang>` stub for SDK 3.5.0 compatibility
+- `src/openforms/js/components/admin/form_design/authentication/index.js` — `verid_oidc` in `BACKEND_OPTIONS_FORMS`
 
 Other:
 - `src/openforms/conf/local_verid_demo.py` — demo settings (PKCE on, iss/aud pinned, CORS open, MFA bypassed). NOT for production.
@@ -41,13 +45,13 @@ Tests:
 
 ## Known defects / gaps
 
-### D1 — JS `BACKEND_OPTIONS_FORMS` / `getPrefillAttributes` is hard-coded (MEDIUM)
+### ~~D1 — JS `getPrefillAttributes` is hard-coded~~ (RESOLVED)
 
-The JS form-builder has hard-coded dispatches for `verid_oidc` (auth options form) and `verid` (prefill claims fetch). There's no plugin registry on the JS side. This is the same shape Yivi uses upstream — fine if accepted, but it means the Ver.iD integration can't be a separately-distributable npm package without upstream changes to Open Forms.
+Resolved: prefill plugins can now declare `get_custom_attributes_url()` and the JS handler fetches from that URL, forwarding auth backend options as query params. No per-plugin JS branches needed.
 
-### D2 — `AnyAuthContext` union is closed (LOW)
+### ~~D2 — `AnyAuthContext` union is closed~~ (RESOLVED)
 
-`VerIDContext` was added to the union in `types.py`. Plugin-distributability blocker (same as D1), but no runtime cost.
+Resolved: `PluginAuthContext` added to the union in `types.py`. Any plugin with `manage_auth_context = True` can return its own context dict without patching `types.py`.
 
 ### D3 — Form-builder reactivity to mid-session flow changes (LOW)
 
@@ -102,9 +106,9 @@ This is the proper fix and should land alongside any upstream PR.
 
 If Ver.iD rotates keys mid-flight, the 5-minute JWKS cache will serve stale data and tokens with the new `kid` will fail until the cache expires. Add a cache-miss → refresh-once pattern.
 
-### D7 — Patches in `node_modules/@open-formulieren/formio-builder` not currently needed (resolved)
+### ~~D7 — Patches in `node_modules/@open-formulieren/formio-builder`~~ (RESOLVED)
 
-We had an earlier patch that's been removed; the upstream component handles our case correctly with the back-end side handling differences. `patches/` no longer carries a formio-builder entry. `package.json`'s `postinstall: patch-package` is still there, harmless.
+Resolved: the earlier patch was removed and `patch-package` has been dropped from `package.json`.
 
 ## Production-readiness checklist
 
