@@ -141,32 +141,17 @@ class YiviContext(TypedDict):
     authorizee: YiviAuthorizee
 
 
-class VerIDLegalSubject(TypedDict):
-    identifierType: Literal["bsn", "kvkNummer", "opaque"]
-    identifier: str
-    additionalInformation: dict
+class PluginAuthContext(TypedDict):
+    """Generic auth context for third-party plugins that set manage_auth_context = True.
 
+    Plugins that manage their own auth context return a dict matching this shape
+    from their ``auth_info_to_auth_context`` method.  Adding this to AnyAuthContext
+    means new wallet/disclosure plugins no longer need to patch this module.
+    """
 
-class VerIDAuthorizee(TypedDict):
-    legalSubject: VerIDLegalSubject
-
-
-# Experimental — shape mirrors YiviContext since both are wallet-disclosure providers.
-class VerIDContext(TypedDict):
-    source: Literal["verid"]
-    levelOfAssurance: Literal[
-        "urn:etoegang:core:assurance-class:loa1",
-        "urn:etoegang:core:assurance-class:loa2",
-        "urn:etoegang:core:assurance-class:loa2plus",
-        "urn:etoegang:core:assurance-class:loa3",
-        "urn:etoegang:core:assurance-class:loa4",
-        "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport",
-        "urn:oasis:names:tc:SAML:2.0:ac:classes:MobileTwoFactorContract",
-        "urn:oasis:names:tc:SAML:2.0:ac:classes:Smartcard",
-        "urn:oasis:names:tc:SAML:2.0:ac:classes:SmartcardPKI",
-        "unknown",
-    ]
-    authorizee: VerIDAuthorizee
+    source: str
+    levelOfAssurance: str
+    authorizee: dict
 
 
 class EIDASNaturalPersonSubject(TypedDict):
@@ -238,5 +223,5 @@ type AnyAuthContext = (
     | EIDASCompanyContext
     | EmployeeContext
     | YiviContext
-    | VerIDContext
+    | PluginAuthContext
 )
