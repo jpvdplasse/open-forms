@@ -22,7 +22,7 @@ from ...constants import (
 )
 from ...models import AuthInfo
 from ...registry import register
-from ...types import VerIDContext
+from ...types import PluginAuthContext
 from ...typing import FormAuth
 from .config import VerIDOptions, VerIDOptionsSerializer
 from .constants import (
@@ -191,7 +191,7 @@ class VerIDOIDCAuthentication(OIDCAuthentication[VerIDClaims, VerIDOptions]):
             case _:  # pragma: no cover
                 assert_never(auth_attribute)
 
-    def auth_info_to_auth_context(self, auth_info: AuthInfo) -> VerIDContext:
+    def auth_info_to_auth_context(self, auth_info: AuthInfo) -> PluginAuthContext:
         auth_attribute = AuthAttribute(auth_info.attribute)
         match auth_attribute:
             case AuthAttribute.bsn:

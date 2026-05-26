@@ -3,7 +3,7 @@ Tests for the Open Forms Ver.iD authentication plugin.
 
 These exercise ``VerIDOIDCAuthentication`` directly (no HTTP layer), focusing
 on the small unit of logic we own: deciding which auth attribute came back,
-shaping the ``FormAuth`` and ``VerIDContext`` payloads, and selecting the
+shaping the ``FormAuth`` and ``PluginAuthContext`` payloads, and selecting the
 per-form OIDC client identifier from the form options.
 """
 
