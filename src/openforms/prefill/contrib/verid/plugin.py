@@ -33,6 +33,10 @@ class VerIDPrefill(BasePlugin[VerIDOptions]):
     requires_auth = (AuthAttribute.bsn, AuthAttribute.kvk, AuthAttribute.pseudo)
     requires_auth_plugin = (AUTH_PLUGIN_ID,)
 
+    @classmethod
+    def get_custom_attributes_url(cls) -> str:
+        return "/api/v2/authentication/plugins/verid/flow-claims"
+
     @staticmethod
     def get_available_attributes() -> Iterable[tuple[str, str]]:
         # The exact attribute set depends on the Ver.iD disclosure flow used
