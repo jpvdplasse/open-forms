@@ -1,0 +1,61 @@
+# Bouwt Open Formulieren mét de ver.ID-plugin en duwt het naar GHCR.
+#
+# WAAROM EEN EIGEN WORKFLOW. De workflow van upstream (build-image.yml) is een
+# workflow_call die door hun ci.yml wordt aangestuurd en naar Docker Hub duwt.
+# Die willen we niet omleiden; dit is losstaand en doet één ding.
+#
+# WAAROM IN CI EN NIET LOKAAL. De cluster-nodes zijn amd64 en de laptop is arm64.
+# Een cross-build met emulatie duurt tientallen minuten; een runner van GitHub
+# doet het native.
+#
+# Draaien:  gh workflow run build-verid-image.yml --ref verid-op-3.5.6
+name: Bouw het ver.ID-image
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag voor het image (bijv. 3.5.6-verid)
+        required: true
+        default: 3.5.6-verid
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  bouwen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Versie en SDK uit de repo lezen
+        id: meta
+        run: |
+          echo "sdk=$(cat .sdk-release)" >> "$GITHUB_OUTPUT"
+          echo "hash=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bouwen en duwen
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          # amd64 alleen; de nodes zijn amd64 en een arm-variant erbij
+          # verdubbelt de bouwtijd voor niets.
+          platforms: linux/amd64
+          build-args: |
+            TARGET_ENVIRONMENT=production
+            SDK_RELEASE=${{ steps.meta.outputs.sdk }}
+            RELEASE=${{ inputs.tag }}
+            COMMIT_HASH=${{ steps.meta.outputs.hash }}
+          tags: ghcr.io/${{ github.repository_owner }}/open-forms-verid:${{ inputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
