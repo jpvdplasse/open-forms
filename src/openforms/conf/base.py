@@ -1181,6 +1181,17 @@ OIDC_STORE_ID_TOKEN = True
 # Access token required for performing the Token exchange
 OIDC_STORE_ACCESS_TOKEN = True
 
+# PKCE. Uit tenzij je het aanzet, want het geldt voor alle OIDC-providers in
+# deze installatie en niet elke provider ondersteunt het. Ver.iD's disclosure-
+# flow is een publieke client en heeft het nodig: hun token-endpoint geeft
+# `token_endpoint_auth_methods_supported: ["none"]` op, dus er is geen
+# client-secret en de code_verifier is het enige wat de ruil bindt aan degene
+# die hem begon.
+OIDC_USE_PKCE = config("OIDC_USE_PKCE", default=False)
+OIDC_PKCE_CODE_CHALLENGE_METHOD = config(
+    "OIDC_PKCE_CODE_CHALLENGE_METHOD", default="S256"
+)
+
 # TODO: remove once 2.7 is released, this is required for data migration(s)
 MOZILLA_DJANGO_OIDC_DB_CACHE = "solo"
 
