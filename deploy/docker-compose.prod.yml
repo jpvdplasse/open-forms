@@ -1,0 +1,218 @@
+x-app-env: &x-app-env
+  - DJANGO_SETTINGS_MODULE=openforms.conf.demo
+  - SECRET_KEY=${SECRET_KEY}
+  - DB_NAME=openforms
+  - DB_USER=openforms
+  - DB_PASSWORD=${DB_PASSWORD}
+  - DB_HOST=db
+  - STATIC_ROOT_VOLUME=/srv/static/
+  - CACHE_DEFAULT=redis:6379/0
+  - CACHE_AXES=redis:6379/0
+  - CACHE_PORTALOCKER=redis:6379/0
+  - ALLOWED_HOSTS=${DOMAIN},${DOMAIN_ALT}
+  - USE_X_FORWARDED_HOST=true
+  - CSRF_TRUSTED_ORIGINS=https://${DOMAIN},https://${DOMAIN_ALT}
+  - CELERY_BROKER_URL=redis://redis:6379/0
+  - CELERY_RESULT_BACKEND=redis://redis:6379/0
+  - CELERY_LOGLEVEL=INFO
+  - CELERY_WORKER_NAME=celery@prod
+  - CORS_ALLOW_ALL_ORIGINS=false
+  - CORS_ALLOWED_ORIGINS=https://${DOMAIN},https://${DOMAIN_ALT},https://demostadje.nl,https://www.demostadje.nl
+  - EMAIL_HOST=smtp
+  - EMAIL_PORT=1025
+  - TZ=Europe/Amsterdam
+  - CSP_REPORT_ONLY=yes
+  - SHOW_ENVIRONMENT=yes
+  - ENVIRONMENT_LABEL=demo
+  - ENVIRONMENT_BACKGROUND_COLOR=#e67e22
+  - ENVIRONMENT_FOREGROUND_COLOR=white
+  - RUN_SETUP_CONFIG=True
+  - OTEL_SDK_DISABLED=true
+  - IS_HTTPS=yes
+  - BASE_URL=https://${DOMAIN}
+  - SUBPATH=${SUBPATH:-}
+  - DISABLE_2FA=yes
+
+x-app-volumes: &x-app-volumes
+  - static:/srv/static
+  - media:/app/media
+  - private_media:/app/private_media
+  - ./setup_configuration:/app/setup_configuration
+  - ./conf/demo.py:/app/src/openforms/conf/demo.py:ro
+  - log:/app/log
+  - certifi_ca_bundle:/app/certifi_ca_bundle
+
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=openforms
+      - POSTGRES_USER=openforms
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openforms"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - open-forms-prod
+
+  redis:
+    image: redis:8
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "128mb", "--maxmemory-policy", "allkeys-lru"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 1s
+      retries: 3
+    networks:
+      - open-forms-prod
+    volumes:
+      - redis_data:/data
+
+  smtp:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    networks:
+      - open-forms-prod
+
+  prepare-volumes:
+    image: busybox
+    command: /bin/chown -R 1000 /private-media /srv/static
+    volumes:
+      - static:/srv/static
+      - private_media:/private-media
+
+  web:
+    build:
+      context: ..
+      args:
+        RELEASE: demo
+        SDK_RELEASE: latest
+    image: openforms-nijmegen:demo
+    restart: unless-stopped
+    environment: *x-app-env
+    volumes: *x-app-volumes
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      prepare-volumes:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "maykin-common", "health-check"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      - open-forms-prod
+
+  web-init:
+    build:
+      context: ..
+    image: openforms-nijmegen:demo
+    environment: *x-app-env
+    command: /setup_configuration.sh
+    volumes: *x-app-volumes
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      prepare-volumes:
+        condition: service_completed_successfully
+    networks:
+      - open-forms-prod
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      - DOMAIN=${DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+      - static:/srv/static:ro
+      - private_media:/srv/private-media:ro
+      - /opt/demostadje:/srv/demostadje:ro
+    depends_on:
+      - web
+    networks:
+      - open-forms-prod
+
+  celery:
+    image: openforms-nijmegen:demo
+    restart: unless-stopped
+    environment: *x-app-env
+    command: /celery_worker.sh
+    healthcheck:
+      test: [
+        "CMD",
+        "maykin-common",
+        "worker-health-check",
+        "--liveness-file=/app/tmp/celery_worker_event_loop.live",
+        "--max-age=70",
+        "--broker=redis://redis:6379/0",
+        "--worker-name=celery@prod",
+      ]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    volumes: *x-app-volumes
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - open-forms-prod
+
+  celery-beat:
+    image: openforms-nijmegen:demo
+    restart: unless-stopped
+    environment: *x-app-env
+    command: /celery_beat.sh
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: [
+        "CMD",
+        "maykin-common",
+        "beat-health-check",
+        "--file=/app/tmp/celery_beat.live",
+        "--max-age=120"
+      ]
+      interval: 60s
+      timeout: 5s
+      retries: 5
+    networks:
+      - open-forms-prod
+
+volumes:
+  db:
+  static:
+  media:
+  private_media:
+  log:
+  certifi_ca_bundle:
+  redis_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  open-forms-prod:
+    name: open-forms-prod

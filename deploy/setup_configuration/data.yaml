@@ -1,0 +1,4 @@
+oidc_db_config_enable: False
+zgw_consumers_config_enable: False
+objects_api_config_enable: False
+zgw_api_config_enable: False
